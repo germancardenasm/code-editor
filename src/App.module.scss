@@ -1,0 +1,26 @@
+@import-normalize; /* bring in normalize.css styles */
+
+.App {
+  text-align: center;
+}
+
+.output {
+  border: 1px solid black;
+  width: 300px;
+  height: 300px;
+  margin-top: 100px;
+  content: '';
+}
+
+.App-header {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+}
+
+.App-link {
+  color: rgb(112, 76, 182);
+}
