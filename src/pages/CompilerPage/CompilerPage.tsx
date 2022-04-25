@@ -1,37 +1,37 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as esbuild from 'esbuild-wasm';
 import styles from './CompilerPage.module.scss';
-import { getEnvPlugin } from '../../plugins/esbuild-plugin';
+import { resolvePackagePath, fetchPackage } from '../../plugins';
 
 const CompilerPage = () => {
   const [userCode, setUserCode] = useState(
     'import toUpper from "nested-test-pkg"; const App = ()=><div>hello</div>; console.log(App);'
   );
   const [transpiledCode, setTranspiledCode] = useState<string | undefined>('');
-  const initialized = useRef(false);
+  const [isEsbuildInitialized, setIsEsbuildInitialized] = useState(false);
+  const isCompileButtonDisable = isEsbuildInitialized === false;
 
   useEffect(() => {
-    if (initialized.current) return;
-    initialized.current = true;
+    if (isEsbuildInitialized) return;
     const initializeBundler = async () => {
       try {
         await esbuild.initialize({
           wasmURL: '/esbuild.wasm',
           worker: true
         });
-        console.log('initialized');
+        setIsEsbuildInitialized(true);
       } catch (e) {
         console.log({ e });
       }
     };
     initializeBundler();
-  }, []);
+  }, [isEsbuildInitialized]);
 
   const handleOnClick = async () => {
     try {
       const compiledCode = await esbuild.build({
         bundle: true,
-        plugins: [getEnvPlugin(userCode)],
+        plugins: [resolvePackagePath(), fetchPackage(userCode)],
         entryPoints: ['index.js'],
         define: { 'process.env.NODE_ENV': '"production"', global: 'window' }
       });
@@ -49,7 +49,11 @@ const CompilerPage = () => {
 
   return (
     <div>
-      <button onClick={handleOnClick} className={styles['compile-button']}>
+      <button
+        onClick={handleOnClick}
+        className={styles['compile-button']}
+        disabled={isCompileButtonDisable}
+      >
         compile
       </button>
       <div>

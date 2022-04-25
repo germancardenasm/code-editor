@@ -6,35 +6,12 @@ const fileCache = localForage.createInstance({
   name: 'file-cache',
   storeName: 'npm-packages'
 });
-export const getEnvPlugin = (userCode: string): esbuild.Plugin => ({
-  name: 'env',
+
+export const fetchPackage = (userCode: string): esbuild.Plugin => ({
+  name: 'fetch-package',
   setup(build) {
-    build.onResolve({ filter: /.*/ }, (args) => {
-      console.log({ onResolveArgs: args });
-      if (args.path === 'index.js') {
-        return {
-          path: args.path,
-          namespace: 'a'
-        };
-      }
-
-      if (/^.\//.test(args.path) || /^(..)\//.test(args.path)) {
-        return {
-          path: new URL(args.path, `https://unpkg.com${args.resolveDir}/`).href,
-          namespace: 'a'
-        };
-      }
-
-      return {
-        path: `https://unpkg.com/${args.path}`,
-        namespace: 'a'
-      };
-    });
-
     build.onLoad({ filter: /.*/, namespace: 'a' }, async (args) => {
-      console.log({ onLoadArgs: args });
       if (args.path === 'index.js') {
-        console.log({ userCode });
         return {
           loader: 'jsx',
           contents: userCode
