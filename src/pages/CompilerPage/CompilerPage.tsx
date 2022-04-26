@@ -4,9 +4,7 @@ import styles from './CompilerPage.module.scss';
 import { resolvePackagePath, fetchPackage } from '../../plugins';
 
 const CompilerPage = () => {
-  const [userCode, setUserCode] = useState(
-    'import toUpper from "nested-test-pkg"; const App = ()=><div>hello</div>; console.log(App);'
-  );
+  const [userCode, setUserCode] = useState("import 'bulma/css/bulma.css'");
   const [transpiledCode, setTranspiledCode] = useState<string | undefined>('');
   const [isEsbuildInitialized, setIsEsbuildInitialized] = useState(false);
   const isCompileButtonDisable = isEsbuildInitialized === false;
