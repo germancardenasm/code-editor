@@ -1,29 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as esbuild from 'esbuild-wasm';
+import React, { useRef, useState } from 'react';
+import esbuild from 'esbuild-wasm';
 import styles from './CompilerPage.module.scss';
 import { resolvePackagePath, fetchPackage } from '../../plugins';
+import { iframeInitHtml, initialCode } from './constants';
+import { useInitializeEsbuild } from '../../hooks';
 
 const CompilerPage = () => {
-  const [userCode, setUserCode] = useState("import 'bulma/css/bulma.css'");
-  const [transpiledCode, setTranspiledCode] = useState<string | undefined>('');
-  const [isEsbuildInitialized, setIsEsbuildInitialized] = useState(false);
+  const [userCode, setUserCode] = useState(initialCode);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const isEsbuildInitialized = useInitializeEsbuild();
   const isCompileButtonDisable = isEsbuildInitialized === false;
-
-  useEffect(() => {
-    if (isEsbuildInitialized) return;
-    const initializeBundler = async () => {
-      try {
-        await esbuild.initialize({
-          wasmURL: '/esbuild.wasm',
-          worker: true
-        });
-        setIsEsbuildInitialized(true);
-      } catch (e) {
-        console.log({ e });
-      }
-    };
-    initializeBundler();
-  }, [isEsbuildInitialized]);
 
   const handleOnClick = async () => {
     try {
@@ -31,11 +17,12 @@ const CompilerPage = () => {
         bundle: true,
         plugins: [resolvePackagePath(), fetchPackage(userCode)],
         entryPoints: ['index.js'],
-        define: { 'process.env.NODE_ENV': '"production"', global: 'window' }
+        define: { 'process.env.NODE_ENV': '"development"', global: 'window' }
       });
-      setTranspiledCode(
-        compiledCode.outputFiles ? compiledCode.outputFiles[0].text : ''
-      );
+      const compiledUserCode = compiledCode?.outputFiles?.[0]?.text;
+      iframeRef.current &&
+        iframeRef.current.contentWindow &&
+        iframeRef.current.contentWindow.postMessage(compiledUserCode, '*');
     } catch (error) {
       console.log('error: ', error);
     }
@@ -60,7 +47,13 @@ const CompilerPage = () => {
           onChange={handleInputChange}
           value={userCode}
         ></textarea>
-        <code className={styles['output']}>{transpiledCode}</code>
+        <iframe
+          className={styles['output']}
+          title='preview'
+          srcDoc={iframeInitHtml}
+          sandbox='allow-scripts'
+          ref={iframeRef}
+        ></iframe>
       </div>
     </div>
   );
