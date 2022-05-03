@@ -4,6 +4,7 @@ import styles from './CompilerPage.module.scss';
 import { resolvePackagePath, fetchPackage } from '../../plugins';
 import { iframeInitHtml, initialCode } from './constants';
 import { useInitializeEsbuild } from '../../hooks';
+import { CodeEditor } from '../../components';
 
 const CompilerPage = () => {
   const [userCode, setUserCode] = useState(initialCode);
@@ -28,10 +29,9 @@ const CompilerPage = () => {
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setUserCode(e.target.value);
+  const handleInputChange = (value: string) => {
+    setUserCode(value);
   };
-
   return (
     <div>
       <button
@@ -42,11 +42,6 @@ const CompilerPage = () => {
         compile
       </button>
       <div>
-        <textarea
-          className={styles['code']}
-          onChange={handleInputChange}
-          value={userCode}
-        ></textarea>
         <iframe
           className={styles['output']}
           title='preview'
@@ -54,6 +49,7 @@ const CompilerPage = () => {
           sandbox='allow-scripts'
           ref={iframeRef}
         ></iframe>
+        <CodeEditor onChange={handleInputChange} />
       </div>
     </div>
   );
