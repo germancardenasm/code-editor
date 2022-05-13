@@ -27,7 +27,7 @@ const CodeEditor: FC<ICodeEditor> = ({ onChange }) => {
       : '';
 
     const formattedCode = prettier.format(unformattedCode, prettierOptions);
-    console.log({formattedCode});
+    console.log({ formattedCode });
     monacoRef.current?.setValue(formattedCode);
   };
 
@@ -35,15 +35,19 @@ const CodeEditor: FC<ICodeEditor> = ({ onChange }) => {
     <div className={styles['editor-wrapper']}>
       <button onClick={handleOnFormat}>Format</button>
       <MonacoEditor
-        language='typescript'
+        language='javascript'
         theme='vs-dark'
         value={initialCode}
         options={{
+          wordWrap: 'on',
+          minimap: { enabled: false },
+          showUnused: false,
+          folding: false,
+          lineNumbersMinChars: 3,
           selectOnLineNumbers: true,
           fontSize: 14,
-          minimap: {
-            enabled: false
-          }
+          automaticLayout: true,
+          scrollBeyondLastLine: false,
         }}
         onChange={handleInputChange}
         onMount={handleOnMount}

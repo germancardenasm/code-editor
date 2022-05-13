@@ -1,6 +1,8 @@
-const a = /^.\//.test('./');
-a;
+const compiledCode = {
+  outputFiles: { text: 'hello world', path: 'test.js' }
+};
 
-const url = './cjs/react.development.js';
-const b = url.slice(1);
-b;
+const a = compiledCode?.outputFiles?.[0]?.text; 
+
+
+

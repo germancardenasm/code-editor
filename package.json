@@ -18,11 +18,13 @@
     "husky": "^7.0.4",
     "lint-staged": "^12.3.4",
     "localforage": "^1.10.0",
+    "lodash": "^4.17.21",
     "monaco-editor": "^0.33.0",
     "prettier": "^2.6.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.6",
+    "react-resizable": "^3.0.4",
     "react-router-dom": "^6.2.1",
     "react-scripts": "5.0.0",
     "sass": "^1.49.8",
@@ -51,6 +53,7 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.182",
     "eslint-plugin-import": "^2.25.4"
   },
   "husky": {

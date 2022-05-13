@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { CounterPage, CompilerPage } from './pages';
-import styles from './App.module.scss';
+import './App.css';
 
 function App() {
   const [toggle, setToggle] = useState(true);
@@ -10,14 +10,14 @@ function App() {
   };
 
   return (
-    <div className={styles['App']}>
-      <header className={styles['App-header']}>
+    <div className='App'>
+      <header className='App-header'>
         <button onClick={handleOnCLick}>Change page</button>
       </header>
-      <main className={styles['main']}>
+      <main className='main'>
         {toggle ? <CompilerPage /> : <CounterPage />}
       </main>
-      <footer className={styles['footer']}>Footer</footer>
+      <footer className='footer'>Footer</footer>
     </div>
   );
 }
