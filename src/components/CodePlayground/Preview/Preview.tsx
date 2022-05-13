@@ -8,7 +8,7 @@ interface PreviewProps {
 
 const Preview: FC<PreviewProps> = ({ compiledUserCode }) => {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
-  console.log({compiledUserCode});
+  console.log({ compiledUserCode });
   useEffect(() => {
     iframeRef.current &&
       iframeRef.current.contentWindow &&
@@ -16,13 +16,18 @@ const Preview: FC<PreviewProps> = ({ compiledUserCode }) => {
   }, [compiledUserCode]);
 
   return (
-    <iframe
-      className={styles['output']}
-      title='preview'
-      srcDoc={iframeInitHtml}
-      sandbox='allow-scripts'
-      ref={iframeRef}
-    ></iframe>
+    <div className='position-relative'>
+      {/* The overlay element is a work around to fix the issue of the iframe 
+      conflicting with the draggable element of the resizable component. */}
+      <div className={styles['overlay-element']}></div>
+      <iframe
+        className='flex-grow-1'
+        title='preview'
+        srcDoc={iframeInitHtml}
+        sandbox='allow-scripts'
+        ref={iframeRef}
+      ></iframe>
+    </div>
   );
 };
 
