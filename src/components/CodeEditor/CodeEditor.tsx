@@ -5,7 +5,7 @@ import prettier from 'prettier';
 import prettierOptions from './prettierOptions';
 import styles from './CodeEditor.module.scss';
 import { initialCode } from './constants';
-
+import cx from 'classnames';
 interface ICodeEditor {
   onChange(value?: string): void;
 }
@@ -27,12 +27,18 @@ const CodeEditor: FC<ICodeEditor> = ({ onChange }) => {
       : '';
 
     const formattedCode = prettier.format(unformattedCode, prettierOptions);
-    console.log({formattedCode});
+    console.log({ formattedCode });
     monacoRef.current?.setValue(formattedCode);
   };
 
   return (
-    <div className={styles['editor-wrapper']}>
+    <div
+      className={cx(
+        'flex-grow-1',
+        'position-wrapper',
+        styles['editor-wrapper']
+      )}
+    >
       <button onClick={handleOnFormat}>Format</button>
       <MonacoEditor
         language='typescript'
@@ -43,11 +49,13 @@ const CodeEditor: FC<ICodeEditor> = ({ onChange }) => {
           fontSize: 14,
           minimap: {
             enabled: false
-          }
+          },
+          automaticLayout: true,
+          scrollBeyondLastLine: false
         }}
         onChange={handleInputChange}
         onMount={handleOnMount}
-        height={500}
+        height={'100%'}
       />
     </div>
   );
